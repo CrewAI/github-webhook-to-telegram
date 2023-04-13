@@ -31,6 +31,7 @@ from utils.telegram import send_to_telegram
 # import logging
 
 routes = web.RouteTableDef()
+session = None
 
 
 @routes.get("/")
