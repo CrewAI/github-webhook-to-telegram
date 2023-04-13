@@ -40,6 +40,7 @@ async def main(_):
 
 @routes.post("/")
 async def github_webhook_post_handler(request: Request) -> Response:
+    session = await get_session()
     tg_chat_id: Union[str, int, bool] = await validate_github_webhook(request)
     if not tg_chat_id:
         return web.Response(status=403, text="403: Forbidden")
@@ -54,12 +55,9 @@ async def get_session() -> ClientSession:
 async def on_shutdown(_):
     await session.close()
 
-
 if __name__ == "__main__":
     # FORMAT = "[%(filename)s:%(lineno)s - %(funcName)20s() ] %(message)s"
     # logging.basicConfig(level=logging.INFO, format=FORMAT)
-    session: ClientSession \
-        = asyncio.get_event_loop().run_until_complete(get_session())
     app = web.Application()
     app.add_routes(routes)
     app.on_shutdown.append(on_shutdown)
